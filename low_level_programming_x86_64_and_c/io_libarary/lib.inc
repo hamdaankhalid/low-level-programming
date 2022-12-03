@@ -18,7 +18,7 @@ string_length:
 
 ; Accepts a pointer to a null terminated string and prints it stdout.
 print_string:
-  push rdi ; put input on stack so we can use it later
+  push rdi ; put input on stack so we can use it later since we dont change anything with rdi it is also used as the argument for the function call below
   call string_length 
   pop rsi ; restore input from stack into rsi
   mov rdx, rax ; the amount of bytes to write is stored in rax from the func call we had made
@@ -29,14 +29,19 @@ print_string:
 
 ; accepts a characcter code directly as its first argument and prints it to stdout
 print_char:
-  xor rax, rax
+  push rdi
+
+  mov rdi, rsp
+  call print_string 
+
+  pop rdi
   ret
-    
+
 
 print_newline:
-    xor rax, rax
+    mov rdi, 10
+    call print_string
     ret
-
 
 print_uint:
     xor rax, rax
@@ -71,7 +76,32 @@ parse_int:
     xor rax, rax
     ret 
 
-
+; rdi = source
+; rsi = dest
+; rdx = dest length 
 string_copy:
+    push rdi
+    push rsi
+    push rdx
+    
+    call string_length
+    
+    pop rdx
+    pop rsi
+    pop rdi
+
+    cmp rax, rdx
+    jae .length_not_equal
+    ; at this point we know they are at equal lengths
+.iterate:
+  mov dl, byte[rdi] ; use dl register to move bytes
+  mov byte[rsi], dl
+  inc rdi
+  inc rsi
+  test dl, dl
+  jnz .iterate
+
+
+.length_not_equal:
     xor rax, rax
     ret
