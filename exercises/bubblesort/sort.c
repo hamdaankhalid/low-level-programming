@@ -2,28 +2,33 @@
 #include "mylib.h"
 
 int main() {
-  int arr[] = {6, 9, 12, 45, 65, 23, 0, -5, 23, 1, 7}; // size is 5
+  int arr[] = {9, 6, 6, 3, 4, 2}; // size is 16
+  
   puts("Before Sorting");
-  for (int i = 0; i < 11; i++) {
+  for (int i = 0; i < 6; i++) {
     printf("%d ,", arr[i]);
   }
   puts("\n");
 
-  bubblesort(arr, 11);
+  bubblesort(arr, 6);
 
   puts("After Sorting");
 
-  for (int i = 0; i < 11; i++) {
+  for (int i = 0; i < 6; i++) {
     printf("%d ,", arr[i]);
   }
-
   puts("\n");
 
   puts("Accumulating array sum");
-
-  int sum = sumarr(arr, 11);
+  int sum = sumarr(arr, 2);
+  printf("Sum of Arr %d\n", sum);
   
-  printf("Sum of Arr %d", sum);
+  printf("Swap two elements cutely!\n");
+  
+  swaptwo(arr, 2, 4);
 
+  for (int i = 0; i < 6; i++) {
+    printf("%d ,", arr[i]);
+  }
   puts("\n");
 }

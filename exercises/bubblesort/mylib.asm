@@ -6,74 +6,59 @@
 
 global bubblesort
 global sumarr
+global swaptwo
 
 
 ; ############### bubblesort function #############
-; int array as first arg
-; size of array as second arg
+; int array as first arg -> rdi
+; size of array as second arg -> rsi
+;**
 bubblesort:
-  ; PROLOGUE
-  push rbp ; preserve old value of ebp this allows nested function calls
-  mov rbp, rsp ; store esp stack pointer in ebp so we can change it back ater we are done messing aroud with stack pointer
-  ; ########
-  mov rax, 1 ; iterator starts from first item in arr
-.outer_loop:
-  cmp rax, rsi
-  je .end
-  ; now rax holds the index of the candidate
-  ; rdi already has first value, our array pointer
-  ; rsi already holds the size of the array
-  push rdi
-  push rsi
-  push rax
-  mov rdx, rax
-  call move_idx_to_spot
-  pop rax
-  pop rsi
-  pop rdi
+  push r14 ; Save non-volatile registers we overwrite
+  push r15
+
+  mov rax, 0 ; outer loop counter
+.outer_loop_for:
+  cmp rax, rsi ; if we have done n^2 iterations we need to exit
+  je .exit
+  mov rcx, 1; inner loop counter that goes form 1 - n comparing i with i -1
+  .inner_loop_for:
+    cmp rcx, rsi ; if inner loop counter has reached end then end this iteration of inner loop
+    je .end_outer_loop_for
+    
+    mov r14d, [rdi + (rcx * 4)] ; load 4 byte int from c array at rcx into r14d
+    mov r15d, [rdi + (rcx-1)*4] ; load 4 byte int from c array at 1 before rcx into r15d
+    cmp r14d, r15d ; if the number at our current index is less than the its neighbor then we skip swapping othewise we swap
+    jg .skip_swap
+
+    mov [rdi+ rcx*4], r15d ; SWAP the neighbors
+    mov [rdi+ (rcx-1)*4], r14d
+
+    .skip_swap:
+      inc rcx
+      jmp .inner_loop_for
+.end_outer_loop_for:
   inc rax
-  jmp .outer_loop
-.end:
-  ; EPILOGUE
-  mov rsp, rbp ; reset our stack to what it was before our manipulations
-  pop rbp
-  ; #########
+  jmp .outer_loop_for
+.exit:
+  pop r15 ; Restore non-volatile registers
+  pop r14
   ret
 
-; Bubble each candidate till sorted
-; first argument is the pointer to the first element of the int array %rdi
-; second argument is the size of the int array %rsi
-; third argument is currIdx %rdx
-move_idx_to_spot:
-  ; PROLOGUE
-  push rbp ; preserve old value of ebp this allows nested function calls
-  mov rbp, rsp ; store esp stack pointer in ebp so we can change it back ater we are done messing aroud with stack pointer
-  ; ########
-  xor rcx, rcx ;  0 out our offset iterator
-.loop:
-  mov r10, rcx
-  add r10, rdx  ; r10 = rcx+rdx
-  cmp r10, rsi ; if our offset+iterator has reached end of array terminate
-  je .end
-  mov r11, [rdi + rcx*4] ; put curr in temp
-  cmp [rdi + (rcx*4) - 4], r11 ; if curr is less than the one before swap
-  jg .if_greater_then_swap
-.continue:
-  inc rcx
-  jmp .loop
-.end:
-  ; EPILOGUE
-  mov rsp, rbp ; reset our stack to what it was before our manipulations
-  pop rbp
-  ; #########
+
+swaptwo:
+  push r14           ; Save non-volatile registers we overwrite
+  push r15
+
+  mov r14,[rdi+ rsi*4] ; Move 4 byte from [rdi+rsi] to r14.
+  mov r15,[rdi+ rdx*4] ; Move 4 byte from [rdi+rdx] to R15. R15B is lower 8 bits of R15
+  mov [rdi+ rsi*4],r15 ; Move the byte in R15B to [rdi+rsi]
+  mov [rdi+ rdx*4],r14 ; Move the byte in R14B to [rdi+rdx]
+  mov rax,rdi
+
+  pop r15            ; Restore non-volatile registers
+  pop r14
   ret
-.if_greater_then_swap:
-  ; SWAP
-  mov r14, [rdi + rcx*4]
-  mov r13, [rdi + (rcx*4) - 4]
-  mov [rdi + rcx*4], r13
-  mov [rdi + (rcx*4) - 4], r14
-  jmp .continue
 
 
 ; ############### sumarr function #############
