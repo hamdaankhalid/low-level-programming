@@ -50,10 +50,10 @@ swaptwo:
   push r14           ; Save non-volatile registers we overwrite
   push r15
 
-  mov r14,[rdi+ rsi*4] ; Move 4 byte from [rdi+rsi] to r14.
-  mov r15,[rdi+ rdx*4] ; Move 4 byte from [rdi+rdx] to R15. R15B is lower 8 bits of R15
-  mov [rdi+ rsi*4],r15 ; Move the byte in R15B to [rdi+rsi]
-  mov [rdi+ rdx*4],r14 ; Move the byte in R14B to [rdi+rdx]
+  mov r14d,[rdi+ rsi*4] ; Move 4 byte from [rdi+rsi] to r14.
+  mov r15d,[rdi+ rdx*4] ; Move 4 byte from [rdi+rdx] to R15. R15B is lower 8 bits of R15
+  mov [rdi+ rsi*4],r15d ; Move the byte in R15B to [rdi+rsi]
+  mov [rdi+ rdx*4],r14d ; Move the byte in R14B to [rdi+rdx]
   mov rax,rdi
 
   pop r15            ; Restore non-volatile registers

@@ -2,7 +2,7 @@
 #include "mylib.h"
 
 int main() {
-  int arr[] = {9, 6, 6, 3, 4, 2}; // size is 16
+  int arr[] = {9, 6, 6, 3, 4, 2}; // size is 6
   
   puts("Before Sorting");
   for (int i = 0; i < 6; i++) {
