@@ -45,18 +45,18 @@ struct LinkedList* build_linked_list(size_t* out_len) {
   dummy_head->next = prev;
   prev->prev = dummy_head;
 
-
-  return dummy_head;
+  struct LinkedList* curr = dummy_head->next;
+  curr->prev = NULL;
+  free(dummy_head);
+ 
+  return curr;
 }
-
 
 
 int main(void) {
   size_t len;
-  struct LinkedList* dummy_head = build_linked_list(&len);
-  struct LinkedList* curr = dummy_head->next;
-  curr->prev = NULL;
-  free(dummy_head);
+  struct LinkedList* head = build_linked_list(&len);
+  struct LinkedList* curr = head;
   
   while (curr != NULL)
   {
