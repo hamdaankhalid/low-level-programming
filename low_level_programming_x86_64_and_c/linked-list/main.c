@@ -8,39 +8,37 @@ struct LinkedList
   struct LinkedList* prev;
 };
 
+void link_nodes(struct LinkedList* first, struct LinkedList* second) {
+  first->next = second;
+  second->prev = first;
+};
+
 
 struct LinkedList* build_linked_list(size_t* out_len) {
   size_t len;
   puts("Enter the length of your linkedlist: ");
   scanf("%zu", &len);
   size_t linkedlistsize = sizeof(struct LinkedList);
-  struct LinkedList* dummy_head = malloc(linkedlistsize);
-  dummy_head->value = 0;
-  dummy_head->next = NULL;
-  dummy_head->prev = NULL;
-  struct LinkedList* prev = NULL;
+
+  // We build linked list from last to first
+  struct LinkedList* after = NULL;
   for (size_t i  = 0 ; i < len; i++) {
     int val;
     printf("Enter value for node at index %d: ", len-i-1);
     scanf("%d", &val);
+
     struct LinkedList* node = malloc(linkedlistsize);
     node->value = val;
-    if (prev != NULL) {
-      node->next = prev;
-    } else {
-        prev = malloc(linkedlistsize);
-        prev->value = val;
-        prev->next = NULL;
+
+    if (after == NULL) {
+        after = node;
+        continue;
     }
-    prev->prev = node;
-    prev = node;
+    link_nodes(node, after);
+    after = node;
   }
-  dummy_head->next = prev;
-  prev->prev = dummy_head;
-  struct LinkedList* curr = dummy_head->next;
-  curr->prev = NULL;
-  free(dummy_head);
-  return curr;
+
+  return after;
 }
 
 const int summation(struct LinkedList* head) {
