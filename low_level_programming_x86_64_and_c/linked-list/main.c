@@ -14,38 +14,54 @@ struct LinkedList* build_linked_list(size_t* out_len) {
   scanf("%zu", &len);
   
   size_t linkedlistsize = sizeof(struct LinkedList);
-  
-  struct LinkedList* dummy = malloc(linkedlistsize);
-  dummy->value = 0;
-  dummy->next = NULL;
-  dummy->prev = NULL;
 
-  struct LinkedList* prev = dummy;
+  struct LinkedList* dummy_head = malloc(linkedlistsize);
+  dummy_head->value = 0;
+  dummy_head->next = NULL;
+  dummy_head->prev = NULL;
 
+  struct LinkedList* prev = NULL;
+
+  // build from tail to head and return the tail
   for (size_t i  = 0 ; i < len; i++) {
     int val;
     scanf("%d", &val);
     
     struct LinkedList* node = malloc(linkedlistsize);
     node->value = val;
-    node->prev = prev;
+
+    if (prev != NULL) {
+      node->next = prev;
+    } else {
+        prev = malloc(linkedlistsize);
+        prev->value = val;
+        prev->next = NULL;
+    }
     
-    prev->next = node;
+    prev->prev = node;
     prev = node;
   }
 
-  return dummy;
+  dummy_head->next = prev;
+  prev->prev = dummy_head;
+
+
+  return dummy_head;
 }
+
+
 
 int main(void) {
   size_t len;
-  struct LinkedList* head = build_linked_list(&len);
-
-  struct LinkedList* curr = head;
+  struct LinkedList* dummy_head = build_linked_list(&len);
+  struct LinkedList* curr = dummy_head->next;
+  curr->prev = NULL;
+  free(dummy_head);
+  
   while (curr != NULL)
   {
     printf("%d ", curr->value);
-    struct LinkedList* temp = curr->prev;
+    struct LinkedList* temp = curr;
     curr = curr->next;
     
     free(temp);
