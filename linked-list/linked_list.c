@@ -196,6 +196,13 @@ int save_linked_list(struct LinkedList* lst, const char* filename) {
  * read from a text file and populate the passed list
  * */
 int load(struct LinkedList** lst, const char* filename) {
+  FILE* file = fopen(filename, "r");
+  if (file == NULL) {
+    return 0;
+  }
+  // TODO 
+
+
   return 1;
 }
 
