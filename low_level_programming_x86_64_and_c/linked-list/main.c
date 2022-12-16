@@ -1,98 +1,56 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <linked_list.h>
 
-struct LinkedList
-{
-  int value;
-  struct LinkedList* next;
-  struct LinkedList* prev;
-};
-
-void link_nodes(struct LinkedList* first, struct LinkedList* second) {
-  first->next = second;
-  second->prev = first;
-};
-
-
-struct LinkedList* build_linked_list(size_t* out_len) {
-  size_t len;
-  puts("Enter the length of your linkedlist: ");
-  scanf("%zu", &len);
-  size_t linkedlistsize = sizeof(struct LinkedList);
-
-  // We build linked list from last to first
-  struct LinkedList* after = NULL;
-  for (size_t i  = 0 ; i < len; i++) {
-    int val;
-    printf("Enter value for node at index %d: ", len-i-1);
-    scanf("%d", &val);
-
-    struct LinkedList* node = malloc(linkedlistsize);
-    node->value = val;
-
-    if (after == NULL) {
-        after = node;
-        continue;
-    }
-    link_nodes(node, after);
-    after = node;
-  }
-
-  return after;
+// The functions below are used by the higher order functions
+int squarer(int x) {
+  return x*x;
 }
 
-const int summation(struct LinkedList* head) {
-  int sum = 0;
-  struct LinkedList* curr = head;
-  while (curr != NULL)
-  {
-    sum += curr->value;
-    curr = curr->next;
-  }
-  return sum;
+
+int increment(int x) {
+ return x + 1;
 }
 
-const void query(struct LinkedList* head, int index) {
-  int idx = 0;
-  struct LinkedList* curr = head;
-  while (curr != NULL)
-  {
-    if (idx == index) {
-      printf("Index %d has value: %d\n", index, curr->value);
-      return;
-    }
-    curr = curr->next;
-    idx++;
-  }
-  printf("Index %d is out of range.\n", index);
+
+void sideffect(int x) {
+  printf("a biatch %d \n", x);
 }
+
 
 int main(void) {
   size_t len;
-  struct LinkedList* head = build_linked_list(&len);
-  
-  puts("\n");
+  struct LinkedList* head = build_linked_list_interactively(&len);
   
   printf("Sum of linked list: %d \n", summation(head));
-
-  query(head, 0);
-  query(head, 3);
-  query(head, 2);
-
-  puts("\n");
-  puts("Destroying....\n");
-  struct LinkedList* curr = head;
-  while (curr != NULL)
-  {
-    printf("%d ", curr->value);
-    struct LinkedList* temp = curr;
-    curr = curr->next;
   
-    free(temp);
-  }
-  puts("\n");
+  printf("Test query %d at idx 3 \n", query(head, 3));
+  
+  puts("Functional Foreach being applied....");
+  foreach(head, &sideffect);
 
-  puts("Completed :)");
+  puts("Functional Map Mutable being applied....");
+  map_mut(head, &squarer);
+  
+  puts("Functional Map being applied....");
+  struct LinkedList* new = map(head, &increment);
+  
+  puts("Functional Iterate Being applied");
+  struct LinkedList* iter_made = iterate(9, &increment, 5);
 
+  printf("Functional Foldl on Iterate returned array %d \n", foldl(iter_made, 9, &increment));
+
+  puts("Functional Map Mutable Array....");
+  print_linked_list(head);
+  
+  puts("Functional Map Array....");
+  print_linked_list(new);
+
+  puts("Functional Iterate Array....");
+  print_linked_list(iter_made);
+
+  puts("Destroying All LinkedLists....");
+  destroy_linked_list(head);
+  destroy_linked_list(iter_made);
+  destroy_linked_list(new);
   return 0;
 }
