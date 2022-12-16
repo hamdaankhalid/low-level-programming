@@ -25,7 +25,7 @@ int main(void) {
 
   puts("Saving og linkedlist to file");
 
-  int k = save_linked_list(head, "./list.txt");
+  int k = save_linked_list(head, "./list.txt", 0);
   if (k == 0) {
     puts("Error saving linked list to file");
     return -1;
@@ -33,9 +33,26 @@ int main(void) {
 
   puts("Reading back from saved file");
 
-  int j = load_linked_list(&head, "./list.txt");
+  int j = load_linked_list(&head, "./list.txt", 0);
   if (j == 0) {
     puts("Error loading back linked list from file");
+    return -1;
+  }
+
+
+  puts("Saving og linkedlist to binary file");
+
+  int l = save_linked_list(head, "./list", 1);
+  if (l == 0) {
+    puts("Error saving linked list to binary file");
+    return -1;
+  }
+
+  puts("Reading back from saved binary file");
+
+  int m = load_linked_list(&head, "./list", 1);
+  if (m == 0) {
+    puts("Error loading back linked list from binary file");
     return -1;
   }
 

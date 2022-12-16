@@ -171,10 +171,10 @@ struct LinkedList* iterate(int initial_val, int (*transform) (int), const size_t
 
 
 /**
- * Save linked list to a text file
+ * Save linked list to file
  * */
-int save_linked_list(struct LinkedList* lst, const char* filename) {
-  FILE* file = fopen(filename, "w");
+int save_linked_list(struct LinkedList* lst, const char* filename, int is_binary) {
+  FILE* file = is_binary == 1 ? fopen(filename, "wb") : fopen(filename, "w");
   if (file == NULL) {
     return 0;
   }
@@ -190,10 +190,10 @@ int save_linked_list(struct LinkedList* lst, const char* filename) {
 }
 
 /**
- * read from a text file and populate the passed list
+ * read from a file and populate the passed list
  * */
-int load_linked_list(struct LinkedList** lst, const char* filename) {
-  FILE* file = fopen(filename, "r");
+int load_linked_list(struct LinkedList** lst, const char* filename, int is_binary) {
+  FILE* file = is_binary == 1 ? fopen(filename, "rb") : fopen(filename, "r");
   if (file == NULL) {
     return 0;
   }

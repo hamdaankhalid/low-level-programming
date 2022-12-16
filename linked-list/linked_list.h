@@ -40,9 +40,9 @@ struct LinkedList* iterate(int initial_val, int (*transform) (int), const size_t
 /**
  * Save linked list to a text file
  * */
-int save_linked_list(struct LinkedList* lst, const char* filename);
+int save_linked_list(struct LinkedList* lst, const char* filename, int is_binary);
 
 /**
  * read from a text file and populate the passed list
  * */
-int load_linked_list(struct LinkedList** lst, const char* filename);
+int load_linked_list(struct LinkedList** lst, const char* filename, int is_binary);
