@@ -17,7 +17,7 @@ struct LinkedList* build_linked_list_interactively(size_t* out_len);
 
 int summation(struct LinkedList* head);
 
-int query(struct LinkedList* head, int index);
+int query(struct LinkedList* head, size_t index);
 
 void print_linked_list(struct LinkedList* node);
 
@@ -40,7 +40,7 @@ struct LinkedList* iterate(int initial_val, int (*transform) (int), size_t count
 /**
  * Save linked list to a text file
  * */
-int save_linked_list(struct LinkedList** lst, const char* filename);
+int save_linked_list(struct LinkedList* lst, const char* filename);
 
 /**
  * read from a text file and populate the passed list
@@ -50,9 +50,9 @@ int load(struct LinkedList** lst, const char* filename);
 /**
  * Save linked list to a BINARY file
  * */
-int save_linked_list(struct LinkedList** lst, const char* filename);
+int save_linked_list_binary(struct LinkedList** lst, const char* filename);
 
 /**
  * read from a BINARY file and populate the passed list
  * */
-int load(struct LinkedList** lst, const char* filename);
+int load_binary(struct LinkedList** lst, const char* filename);

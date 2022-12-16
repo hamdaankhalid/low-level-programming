@@ -3,15 +3,7 @@
 
 #include <linked_list.h>
 
-
-struct LinkedList
-{
-  int value;
-  struct LinkedList* next;
-  struct LinkedList* prev;
-};
-
-size_t LINKED_LIST_SIZE = sizeof(struct LinkedList);
+static size_t LINKED_LIST_SIZE = sizeof(struct LinkedList);
 
 struct LinkedList* new_node(int val) {
   struct LinkedList* node = malloc(LINKED_LIST_SIZE);
@@ -65,13 +57,13 @@ int summation(struct LinkedList* head) {
 
 int query(struct LinkedList* head, size_t index) {
   struct LinkedList* curr = head;
-  for (size_t i = 0; i < index; i++) {
-    if (curr == NULL) {
+  for (size_t i = 0; i <= index; i++) {
+    if (curr->next == NULL) {
       return -1;
     }
     curr = curr->next;
   }
-  return curr;
+  return curr->value;
 }
 
 
@@ -183,13 +175,19 @@ struct LinkedList* iterate(int initial_val, int (*transform) (int), size_t count
 /**
  * Save linked list to a text file
  * */
-int save_linked_list(struct LinkedList** lst, const char* filename) {
+int save_linked_list(struct LinkedList* lst, const char* filename) {
+  FILE* file = fopen(filename, "w");
+  if (file == NULL) {
+    return 0;
+  }
   struct LinkedList* curr = lst;
   while (curr != NULL) {
-    // WRITE TO FILE
+    fprintf(file, "%d\n", curr->value);
 
     curr = curr->next;
   }
+
+  fclose(file);
   return 1;
 }
 
@@ -205,7 +203,7 @@ int load(struct LinkedList** lst, const char* filename) {
 /**
  * Save linked list to a BINARY file
  * */
-int save_linked_list(struct LinkedList** lst, const char* filename) {
+int save_linked_list_binary(struct LinkedList** lst, const char* filename) {
   return 1;
 }
 
@@ -213,6 +211,6 @@ int save_linked_list(struct LinkedList** lst, const char* filename) {
 /**
  * read from a BINARY file and populate the passed list
  * */
-int load(struct LinkedList** lst, const char* filename) {
+int load_binary(struct LinkedList** lst, const char* filename) {
   return 1;
 }

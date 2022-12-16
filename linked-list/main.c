@@ -22,7 +22,11 @@ int main(void) {
   struct LinkedList* head = build_linked_list_interactively(&len);
   
   printf("Sum of linked list: %d \n", summation(head));
-  
+
+  puts("Saving og linkedlist to file");
+
+  save_linked_list(head, "./list.txt");
+
   printf("Test query %d at idx 3 \n", query(head, 3));
   
   puts("Functional Foreach being applied....");
