@@ -25,7 +25,19 @@ int main(void) {
 
   puts("Saving og linkedlist to file");
 
-  save_linked_list(head, "./list.txt");
+  int k = save_linked_list(head, "./list.txt");
+  if (k == 0) {
+    puts("Error saving linked list to file");
+    return -1;
+  }
+
+  puts("Reading back from saved file");
+
+  int j = load_linked_list(&head, "./list.txt");
+  if (j == 0) {
+    puts("Error loading back linked list from file");
+    return -1;
+  }
 
   printf("Test query %d at idx 3 \n", query(head, 3));
   

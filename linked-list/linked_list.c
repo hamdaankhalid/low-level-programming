@@ -3,9 +3,9 @@
 
 #include <linked_list.h>
 
-static size_t LINKED_LIST_SIZE = sizeof(struct LinkedList);
+static const size_t LINKED_LIST_SIZE = sizeof(struct LinkedList);
 
-struct LinkedList* new_node(int val) {
+struct LinkedList* new_node(const int val) {
   struct LinkedList* node = malloc(LINKED_LIST_SIZE);
   node->value = val;
   node->next = NULL;
@@ -22,13 +22,12 @@ struct LinkedList* build_linked_list_interactively(size_t* out_len) {
   size_t len;
   puts("Enter the length of your linkedlist: ");
   scanf("%zu", &len);
-  size_t linkedlistsize = sizeof(struct LinkedList);
 
   // We build linked list from last to first
   struct LinkedList* after = NULL;
   for (size_t i  = 0 ; i < len; i++) {
     int val;
-    printf("Enter value for node at index %d: ", len-i-1);
+    printf("Enter value for node at index %zu: ", len-i-1);
     scanf("%d", &val);
     struct LinkedList* node = new_node(val);
 
@@ -55,7 +54,7 @@ int summation(struct LinkedList* head) {
 }
 
 
-int query(struct LinkedList* head, size_t index) {
+int query(struct LinkedList* head, const size_t index) {
   struct LinkedList* curr = head;
   for (size_t i = 0; i <= index; i++) {
     if (curr->next == NULL) {
@@ -72,7 +71,6 @@ void print_linked_list(struct LinkedList* node) {
   while (curr != NULL)
   {
     printf("%d ", curr->value);
-    struct LinkedList* temp = curr;
     curr = curr->next;
   }
   puts("\n");
@@ -158,7 +156,7 @@ int foldl(struct LinkedList* node, int accumulator, int (*transform) (int)) {
 /**
  * Iterate over list and make a function composition based on the transform function
  * */
-struct LinkedList* iterate(int initial_val, int (*transform) (int), size_t count) { 
+struct LinkedList* iterate(int initial_val, int (*transform) (int), const size_t count) { 
   struct LinkedList* node = new_node(initial_val);
 
   struct LinkedList* prev = node;
@@ -191,18 +189,30 @@ int save_linked_list(struct LinkedList* lst, const char* filename) {
   return 1;
 }
 
-
 /**
  * read from a text file and populate the passed list
  * */
-int load(struct LinkedList** lst, const char* filename) {
+int load_linked_list(struct LinkedList** lst, const char* filename) {
   FILE* file = fopen(filename, "r");
   if (file == NULL) {
     return 0;
   }
-  // TODO 
+  
+  char line[sizeof(int)];
+  struct LinkedList* prev = NULL;
+  while (fgets(line, sizeof(line), file)) {
+    int value = atoi(line);
+    struct LinkedList* curr = new_node(value);
+    if (prev == NULL) {
+      prev = curr;
+      *lst = prev;
+      continue;
+    }
+    link_nodes(prev, curr);
+    prev = curr;
+  }
 
-
+  fclose(file);
   return 1;
 }
 

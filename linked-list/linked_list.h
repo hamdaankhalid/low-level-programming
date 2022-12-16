@@ -9,7 +9,7 @@ struct LinkedList
   struct LinkedList* prev;
 };
 
-struct LinkedList* new_node(int val);
+struct LinkedList* new_node(const int val);
 
 void link_nodes(struct LinkedList* first, struct LinkedList* second);
 
@@ -17,7 +17,7 @@ struct LinkedList* build_linked_list_interactively(size_t* out_len);
 
 int summation(struct LinkedList* head);
 
-int query(struct LinkedList* head, size_t index);
+int query(struct LinkedList* head, const size_t index);
 
 void print_linked_list(struct LinkedList* node);
 
@@ -33,7 +33,7 @@ struct LinkedList* map(struct LinkedList* node, int (*transform) (int));
 
 int foldl(struct LinkedList* node, int accumulator, int (*transform) (int));
 
-struct LinkedList* iterate(int initial_val, int (*transform) (int), size_t count);
+struct LinkedList* iterate(int initial_val, int (*transform) (int), const size_t count);
 
 // Ser-Der Utilities
 
@@ -45,14 +45,4 @@ int save_linked_list(struct LinkedList* lst, const char* filename);
 /**
  * read from a text file and populate the passed list
  * */
-int load(struct LinkedList** lst, const char* filename);
-
-/**
- * Save linked list to a BINARY file
- * */
-int save_linked_list_binary(struct LinkedList** lst, const char* filename);
-
-/**
- * read from a BINARY file and populate the passed list
- * */
-int load_binary(struct LinkedList** lst, const char* filename);
+int load_linked_list(struct LinkedList** lst, const char* filename);
