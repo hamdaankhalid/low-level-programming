@@ -22,7 +22,7 @@ print_hex:
   mov rdi, 1 
   mov rdx, 1
   mov rcx, 64
-  ; each 4 bits should be out[ut as one hexadecimal digit
+  ; each 4 bits should be output as one hexadecimal digit
   ; use shift and bitwise AND to isolate them
   ; the result is the offset in 'codes' array
 iterate:
@@ -40,7 +40,7 @@ iterate:
   pop rcx
   
   pop rax
-  ; test can be used for the fastes 'is it a zero?' check
+  ; test can be used for the fastest 'is it a zero?' check
   test rcx, rcx
   jnz iterate ; transfers control to the specified address if the value in the accumulator is not 0.
   ret
