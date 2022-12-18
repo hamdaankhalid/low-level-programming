@@ -10,9 +10,7 @@ int main(void) {
   }
 
   struct BmpRelMetadata b;
-  struct Pixel p;
-  
-  load_bmp(&b, &p, file);
+  load_bmp(&b, file);
 
   fclose(file);
   return 0;

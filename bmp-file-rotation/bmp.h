@@ -7,6 +7,8 @@ struct BmpRelMetadata {
   uint32_t bOffbits; // offset from the beginning of file to the beginning of the bitmap data
   uint32_t biWidth; // Width and height for bitmap are given in pixels
   uint32_t biHeight;
+
+  uint32_t data_size;
 };
 
 
@@ -16,5 +18,4 @@ struct Pixel {
 };
 
 
-// returns pixel_data array size if successful in loading else -1
-uint32_t load_bmp(struct BmpRelMetadata* hdr, struct Pixel* pixel_data, FILE* file);
+uint32_t load_bmp(struct BmpRelMetadata* hdr, FILE* file);

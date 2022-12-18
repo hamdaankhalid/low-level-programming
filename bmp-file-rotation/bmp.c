@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <bmp.h>
 
@@ -10,7 +11,7 @@ struct BmpMetadata {
   uint32_t bfileSize; // FILESIZE
   uint32_t bfReserved; // unused
   uint32_t bOffbits; // offset from the beginning of file to the beginning of the bitmap data
-  
+
   // INFO
   uint32_t biSize; // Size of InfoHeader =40 
   uint32_t biWidth; // Width and height for bitmap are given in pixels
@@ -26,51 +27,48 @@ struct BmpMetadata {
 };
 
 
+void get_pixel(struct BmpRelMetadata* hdr, FILE* file, struct Pixel* px, int row, int col) {
+  uint32_t init_offset = hdr->bOffbits;
 
-void print_pixels(struct BmpRelMetadata* hdr, FILE* file) {
-  uint32_t offset = hdr->bOffbits + (168*200*3) + 70*3;
+  uint32_t padded_col = 3*hdr->biWidth + ((3*hdr->biWidth)%4);
+  uint32_t target_offset = (row*padded_col) + (3*col);
+  uint32_t target = init_offset + target_offset;
 
-  // uint32_t pixel_data_rows = hdr->biHeight;
+  fseek(file, target, SEEK_SET);
+  fread(&px->b, 1, 1, file);
 
-  // uint32_t cols = 3*hdr->biWidth;
-  // uint32_t padded_cols = cols + (4 - (cols%4));
-  
-  // Each scan line is zero padded to the nearest 4-byte boundary. 
-  // If the image has a width that is not divisible by four, say, 21 bytes, 
-  // there would be 3 bytes of padding at the end of every scan line.
-  // for (int i = 0; i < pixel_data_rows; i++) {
-  //   const char[padded_cols];
-  //   fseek(file, i*, SEEK_SET);
-  // }
+  fseek(file, target+1, SEEK_SET);
+  fread(&px->g, 1, 1, file);
 
-  // char row[padded_cols];
-  unsigned char blue;
-  fseek(file, offset+1, SEEK_SET);
-  fread(&blue, 1, 4, file);
-  //int blueval = int(blue);
+  fseek(file, target+2, SEEK_SET);
+  fread(&px->r, 1, 1, file);
+}
 
-  unsigned char green;
-  fseek(file, offset+2, SEEK_SET);
-  fread(&green, 1, 1, file);
-  int greenval = (int) green;
 
-  unsigned char red;
-  fseek(file, offset+3, SEEK_SET);
-  fread(&red, 1, 1, file);
-  int redval = red - '0';
+void set_pixel(struct BmpRelMetadata* hdr, FILE* file, struct Pixel* px, int row, int col) {
+  uint32_t init_offset = hdr->bOffbits;
 
-  printf("BLUE: %d, GREEN: %d, RED: %d\n", (int)blue, green, red);
-};
+  uint32_t padded_col = 3*hdr->biWidth + ((3*hdr->biWidth)%4);
+  uint32_t target = init_offset + row*padded_col + 3*col;
 
-// returns pixel_data array size if successful in loading else -1
-uint32_t load_bmp(struct BmpRelMetadata* hdr, struct Pixel* pixel_data, FILE* file) {
+  fseek(file, target, SEEK_SET);
+  fwrite(&px->b, 1, 1, file);
+
+  fseek(file, target+1, SEEK_SET);
+  fwrite(&px->g, 1, 1, file);
+
+  fseek(file, target+2, SEEK_SET);
+  fwrite(&px->r, 1, 1, file);
+}
+
+
+uint32_t load_bmp(struct BmpRelMetadata* hdr, FILE* file) {
   if (fgetc(file) != 'B' || fgetc(file) != 'M') {
     return -1;
   }
 
   if (fseek (file, 10, SEEK_SET)) {
-    fprintf (stderr, "error: fseek SEEK_SET failed\n.");
-    return 1;    
+    return -1;    
   }
 
   uint32_t dataoffset;
@@ -79,8 +77,7 @@ uint32_t load_bmp(struct BmpRelMetadata* hdr, struct Pixel* pixel_data, FILE* fi
   hdr->bOffbits = dataoffset;
 
   if (fseek (file, 18, SEEK_SET)) {
-    fprintf (stderr, "error: fseek SEEK_SET failed\n.");
-    return 1;    
+    return -1;    
   }
 
   uint32_t width;
@@ -89,8 +86,7 @@ uint32_t load_bmp(struct BmpRelMetadata* hdr, struct Pixel* pixel_data, FILE* fi
   hdr->biWidth = width;
   
   if (fseek (file, 22, SEEK_SET)) {
-    fprintf (stderr, "error: fseek SEEK_SET failed\n.");
-    return 1;    
+    return -1;    
   }
 
   uint32_t height;
@@ -98,12 +94,22 @@ uint32_t load_bmp(struct BmpRelMetadata* hdr, struct Pixel* pixel_data, FILE* fi
   printf("Height %d \n", height);
   hdr->biHeight = height;
 
-  print_pixels(hdr, file);
+  uint32_t padded_cols = 3*width + ((3*width)%4);
+  uint32_t data_size = padded_cols * height;
+  hdr->data_size = data_size;
+  printf("Image Size %d \n", data_size);
 
   return 0;
 };
 
 
-int rotate_pixel_data(int* pixel_data_width, int* pixel_data_height, unsigned char* old_bitmap_bits, unsigned char* new_bitmap_bits) {
+int rotate_pixel_data(struct BmpRelMetadata* hdr, FILE* file) {
+  // using get pixel and set pixel as we iterate over the array we can manipulate the image as we want
+  
+  // E.g
+  struct Pixel p;
+  get_pixel(hdr, file, &p, 158, 36);
+  printf("%d, %d, %d \n", p.r, p.g, p.b);
+
   return 0;
 };
