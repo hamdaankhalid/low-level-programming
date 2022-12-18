@@ -17,7 +17,7 @@ struct BmpMetadata {
   uint32_t biHeight;
   uint16_t biPlanes; // Numbe of planes
   uint16_t biBitCount; // Used to store pallete entry information
-  u_int32_t biCompression; // Type of compression, uncompressed = 0
+  uint32_t biCompression; // Type of compression, uncompressed = 0
   uint32_t biSizeImage; // Compressed size of Image
   uint32_t biXPelsPerMeter; // Horizontal resolution
   uint32_t biYPelsPerMeter; // Vertical resolution
@@ -25,13 +25,41 @@ struct BmpMetadata {
   uint32_t biClrImportant; // Number   of imporatnt colors
 };
 
-void print_pixels(struct BmpRelMetadata* hdr, FILE* file) {
-  uint32_t offset = hdr->bOffbits;
 
+
+void print_pixels(struct BmpRelMetadata* hdr, FILE* file) {
+  uint32_t offset = hdr->bOffbits + (168*200*3) + 70*3;
+
+  // uint32_t pixel_data_rows = hdr->biHeight;
+
+  // uint32_t cols = 3*hdr->biWidth;
+  // uint32_t padded_cols = cols + (4 - (cols%4));
+  
   // Each scan line is zero padded to the nearest 4-byte boundary. 
   // If the image has a width that is not divisible by four, say, 21 bytes, 
   // there would be 3 bytes of padding at the end of every scan line.
-  
+  // for (int i = 0; i < pixel_data_rows; i++) {
+  //   const char[padded_cols];
+  //   fseek(file, i*, SEEK_SET);
+  // }
+
+  // char row[padded_cols];
+  unsigned char blue;
+  fseek(file, offset+1, SEEK_SET);
+  fread(&blue, 1, 4, file);
+  //int blueval = int(blue);
+
+  unsigned char green;
+  fseek(file, offset+2, SEEK_SET);
+  fread(&green, 1, 1, file);
+  int greenval = (int) green;
+
+  unsigned char red;
+  fseek(file, offset+3, SEEK_SET);
+  fread(&red, 1, 1, file);
+  int redval = red - '0';
+
+  printf("BLUE: %d, GREEN: %d, RED: %d\n", (int)blue, green, red);
 };
 
 // returns pixel_data array size if successful in loading else -1
