@@ -163,7 +163,7 @@ void rev_rows_bmp(struct BmpRelMetadata* hdr, FILE* file) {
 uint32_t rotate_bmp(struct BmpRelMetadata* hdr, FILE* file) {  
   // using get pixel and set pixel as we iterate over the array we can manipulate the image as we want
   transpose_bmp(hdr, file);
-  rev_rows_bmp(hdr, file);
+  // rev_rows_bmp(hdr, file);
 
   return 0;
 };
