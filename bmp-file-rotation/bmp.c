@@ -103,13 +103,67 @@ uint32_t load_bmp(struct BmpRelMetadata* hdr, FILE* file) {
 };
 
 
-int rotate_pixel_data(struct BmpRelMetadata* hdr, FILE* file) {
-  // using get pixel and set pixel as we iterate over the array we can manipulate the image as we want
+void swap(struct BmpRelMetadata* hdr, FILE* file, int row1, int col1, int row2, int col2) {
+  struct Pixel currpx;
+  get_pixel(hdr, file, &currpx, row1, col1);
+
+  struct Pixel swappx;
+  get_pixel(hdr, file, &swappx, row2, col2);
   
-  // E.g
-  struct Pixel p;
-  get_pixel(hdr, file, &p, 158, 36);
-  printf("%d, %d, %d \n", p.r, p.g, p.b);
+  set_pixel(hdr, file, &currpx, row2, col2);
+  set_pixel(hdr, file, &swappx, row1, col1);
+}
+
+/**
+ * NOTE: Transpose only works for square images
+ * */
+void transpose_bmp(struct BmpRelMetadata* hdr, FILE* file) {
+  uint32_t offset = 0;
+  for (uint32_t row = 0; row < hdr->biHeight; row++) {
+    for (uint32_t col = 0; col < offset; col++) {
+      int swap_with_col = (hdr->biWidth-1) - col;
+      int swap_with_row = (hdr->biHeight-1) - row;
+      swap(hdr, file, row, col, swap_with_row, swap_with_col);
+    }
+    offset++;
+  }
+};
+
+
+//      5 4 3 6 -> 6 3 4 5
+// idx  0 1 2 3
+//
+//      3 4 5 6 7
+// idx  0 1 2 3 4
+//      7 6 5 4 3
+void rev_rows_bmp(struct BmpRelMetadata* hdr, FILE* file) {
+  for (uint32_t row = 0; row < hdr->biHeight; row++) {
+    for (uint32_t col = 0; col < (hdr->biWidth/2); col++) {
+      uint32_t swap_with_col = (hdr->biWidth-1) - col;
+      swap(hdr, file, row, col, row, swap_with_col);
+    }
+  }
+};
+
+
+/**
+ *                A            B
+ *              4 3 5        1 5 4
+ *              5 4 2   ->   5 4 3
+ *              1 5 9        9 2 5
+ * 
+ *                A            B'         B
+ *              4 3 5        4 5 1      1 5 4
+ *              5 4 2   ->   3 4 5  ->  5 4 3
+ *              1 5 9        5 2 9      9 2 5
+ *              
+ *    B = AT -> RevCols in A
+ * */
+
+uint32_t rotate_bmp(struct BmpRelMetadata* hdr, FILE* file) {  
+  // using get pixel and set pixel as we iterate over the array we can manipulate the image as we want
+  transpose_bmp(hdr, file);
+  rev_rows_bmp(hdr, file);
 
   return 0;
 };

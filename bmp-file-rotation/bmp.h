@@ -19,3 +19,5 @@ struct Pixel {
 
 
 uint32_t load_bmp(struct BmpRelMetadata* hdr, FILE* file);
+
+uint32_t rotate_bmp(struct BmpRelMetadata* hdr, FILE* file);
