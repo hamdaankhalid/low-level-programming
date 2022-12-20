@@ -205,7 +205,7 @@ int load_linked_list(struct LinkedList** lst, const char* filename, int is_binar
     struct LinkedList* curr = new_node(value);
     if (prev == NULL) {
       prev = curr;
-      *lst = prev;
+    *lst = prev;
       continue;
     }
     link_nodes(prev, curr);

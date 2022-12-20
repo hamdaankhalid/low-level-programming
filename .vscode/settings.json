@@ -34,6 +34,18 @@
     "variant": "c",
     "vector": "c",
     "*.tcc": "c",
-    "stop_token": "c"
+    "stop_token": "c",
+    "atomic": "c",
+    "bitset": "c",
+    "chrono": "c",
+    "cstddef": "c",
+    "__memory": "c",
+    "limits": "c",
+    "locale": "c",
+    "ratio": "c",
+    "system_error": "c",
+    "stdbool.h": "c",
+    "initializer_list": "c",
+    "fcntl.h": "c"
   }
 }
